@@ -1,0 +1,13 @@
+---
+const { id, title, topic, description } = Astro.props;
+---
+
+<article
+  style="border: 1px solid #eee; border-radius: 8px; padding: 16px; margin-bottom: 12px;"
+>
+  <h3 style="margin: 0 0 6px 0;">
+    <a href={`/notes/${id}`}>{title}</a>
+  </h3>
+  <p style="margin: 0; color: #666; font-size: 14px;">Topic: {topic}</p>
+  {description && <p style="margin: 8px 0 0 0;">{description}</p>}
+</article>

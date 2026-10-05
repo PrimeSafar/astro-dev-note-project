@@ -1,0 +1,22 @@
+---
+import  BaseLayout  from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import  NoteCard  from "../components/NoteCard.astro";
+
+const notes = await getCollection("notes");
+const latest = notes
+  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
+  .slice(0, 3);
+---
+<BaseLayout title="Devnotes">
+	<h2>Welcome to Devnotes </h2>
+	{latest.map((note)=>(
+		<NoteCard 
+		id={note.id} 
+		title={note.data.title}
+		topic={note.data.topic}
+		decsription={note.data.description}
+		/>
+	))}
+	  <p><a href="/notes">See all notes →</a></p>
+</BaseLayout>

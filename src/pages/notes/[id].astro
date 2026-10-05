@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes");
+  return notes.map((note) => ({
+    params: { id: note.id },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+---
+
+<BaseLayout title={note.data.title}>
+  <article>
+    <h1>{note.data.title}</h1>
+    <p>Topic: {note.data.topic} • {note.data.date}</p>
+    <hr />
+    <Content />
+
+    <div style="margin-top: 30px;">
+      <button id="bookmark-btn" data-note-id={note.id}>☆ Bookmark</button>
+    </div>
+  </article>
+
+  <script>
+    // Vanilla JS: bookmark toggle with localStorage
+    const btn = document.getElementById("bookmark-btn");
+    const noteId = btn.dataset.noteId;
+
+    const stored = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    let bookmarks = stored;
+
+    if (bookmarks.includes(noteId)) {
+      btn.textContent = "★ Bookmarked";
+    }
+
+    btn.addEventListener("click", () => {
+      if (bookmarks.includes(noteId)) {
+        bookmarks = bookmarks.filter((id) => id !== noteId);
+        btn.textContent = "☆ Bookmark";
+      } else {
+        bookmarks.push(noteId);
+        btn.textContent = "★ Bookmarked";
+      }
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    });
+  </script>
+</BaseLayout>

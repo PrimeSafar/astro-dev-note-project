@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NoteCard from "../../components/NoteCard.astro";
+import { getCollection } from "astro:content";
+
+const notes = await getCollection("notes");
+const sorted = notes.sort(
+  (a, b) => new Date(b.data.date) - new Date(a.data.date)
+);
+---
+
+<BaseLayout title="Notes">
+  <h1>All Notes</h1>
+  {sorted.map((note) => (
+    <NoteCard
+      id={note.id}
+      title={note.data.title}
+      topic={note.data.topic}
+      description={note.data.description}
+    />
+  ))}
+</BaseLayout>
